@@ -10,9 +10,9 @@ params = [
         "variables":{
             "useReverseGeocode":True,
             "input":{
-                "query":"서면 맛집",
-                "start":2, # 목록 페이지
-                "display":20, # 페이지당 사이즈
+                "query":"강남대역 식당",
+                "start":1, # 목록 페이지
+                "display":40, # 페이지당 사이즈
                 "adult":False,
                 "spq":False,
                 "queryRank":"",
@@ -42,57 +42,8 @@ headers = {
 resp = requests.post(url, headers=headers, json=params)
 result = resp.json()
 data = result[0]['data']['businesses']['items']
-print(data)
+# print(data)
 
-
-for d in data:
-    url = "https://pcmap-api.place.naver.com/graphql"
-
-    params = [
-    {
-        "operationName":"getVisitorReviews",
-        "variables":{
-            "input":{
-                "businessId": d['id'],
-                "businessType":None,
-                "item":"0",
-                "bookingBusinessId": d['bookingBusinessId'],
-                "page":1, # 리뷰 페이지
-                "size":10, #페이지당 사이즈
-                "isPhotoUsed":False,
-                "includeContent":True,
-                "getUserStats":True,
-                "includeReceiptPhotos":True,
-                "cidList":d['categoryCodeList'],
-                "getReactions":True,
-                "getTrailer":True
-            },
-            "id": d['id']
-        },
-        "query":"query getVisitorReviews($input: VisitorReviewsInput) {\n  visitorReviews(input: $input) {\n    items {\n      id\n      rating\n      author {\n        id\n        nickname\n        from\n        imageUrl\n        borderImageUrl\n        objectId\n        url\n        review {\n          totalCount\n          imageCount\n          avgRating\n          __typename\n        }\n        theme {\n          totalCount\n          __typename\n        }\n        isFollowing\n        followerCount\n        followRequested\n        __typename\n      }\n      body\n      thumbnail\n      media {\n        type\n        thumbnail\n        thumbnailRatio\n        class\n        videoId\n        videoOriginSource\n        trailerUrl\n        __typename\n      }\n      tags\n      status\n      visitCount\n      viewCount\n      visited\n      created\n      reply {\n        editUrl\n        body\n        editedBy\n        created\n        date\n        replyTitle\n        isReported\n        isSuspended\n        __typename\n      }\n      originType\n      item {\n        name\n        code\n        options\n        __typename\n      }\n      language\n      highlightOffsets\n      apolloCacheId\n      translatedText\n      businessName\n      showBookingItemName\n      bookingItemName\n      votedKeywords {\n        code\n        iconUrl\n        iconCode\n        displayName\n        __typename\n      }\n      userIdno\n      loginIdno\n      receiptInfoUrl\n      reactionStat {\n        id\n        typeCount {\n          name\n          count\n          __typename\n        }\n        totalCount\n        __typename\n      }\n      hasViewerReacted {\n        id\n        reacted\n        __typename\n      }\n      nickname\n      showPaymentInfo\n      visitKeywords {\n        category\n        keywords\n        __typename\n      }\n      __typename\n    }\n    starDistribution {\n      score\n      count\n      __typename\n    }\n    hideProductSelectBox\n    total\n    showRecommendationSort\n    itemReviewStats {\n      score\n      count\n      itemId\n      starDistribution {\n        score\n        count\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
-    }
-    ]
-
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-        "Content-Type": "application/json",
-        "X-Wtm-Graphql": "eyJhcmciOiLri6QiLCJ0eXBlIjoicGxhY2UiLCJzb3VyY2UiOiJwbGFjZSJ9"
-    }
-
-    resp = requests.post(url, headers=headers, json=params)
-    result = resp.json()
-    result = result[0]['data']['visitorReviews']['items']
-    for r in result:
-        print(r['body'])
-    
-    break
-
-# import requests
-
-# url = "https://map.naver.com/p/search/%EA%B0%95%EB%82%A8%EB%8C%80%EC%97%AD%20%EC%8B%9D%EB%8B%B9/place/36193085?c=15.00,0,0,0,dh&placePath=%3Fentry%253Dbmp"
-
-# response = requests.get(url=url)
-
-# html_text = response.text
-
-# print(html_text)
+# json 파일로 저장
+with open('store_data2.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, indent=4, ensure_ascii=False)
