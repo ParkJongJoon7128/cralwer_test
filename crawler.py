@@ -56,7 +56,7 @@ restaurant_list = driver.find_elements(By.CSS_SELECTOR, 'li.tzwk0')
 next_btn = driver.find_elements(By.CSS_SELECTOR, '.zRM9F> a')
 
 # dictionary 생성
-restaurant_dict = {'식당정보': []}
+restaurant_dict = {'data': []}
 # 시작시간
 start = time.time()
 print('[크롤링 시작...]')
@@ -65,6 +65,7 @@ print('[크롤링 시작...]')
 for btn in range(len(next_btn))[1:]:  # next_btn[0] = 이전 페이지 버튼 무시 -> [1]부터 시작
     restaurant_list = driver.find_elements(By.CSS_SELECTOR, 'li.UEzoS')
     names = driver.find_elements(By.CSS_SELECTOR, '.N_KDL > span.place_bluelink')  # (3) 장소명
+    types = driver.find_elements(By.CSS_SELECTOR, '.N_KDL > span.KCMnt')  # (4) 장소 유형
 
     for data in range(len(restaurant_list)):  # 식당 리스트 만큼
         print(data)
@@ -76,27 +77,34 @@ for btn in range(len(next_btn))[1:]:  # next_btn[0] = 이전 페이지 버튼 �
             restaurant_name = names[data].text
             print(restaurant_name)
 
+            # 유형 가져오기
+            restaurant_type = types[data].text
+            print(restaurant_type)
+
             # dict에 데이터 집어넣기
             dict_temp = {
                 'name': restaurant_name,
+                'type': restaurant_type
             }
 
-            restaurant_dict['식당정보'].append(dict_temp)
+            restaurant_dict['data'].append(dict_temp)
 
             sleep(1)
 
         except Exception as e:
-            print(e)
-            print('ERROR!' * 3)
+            break
+            # print(e)
+            # print('ERROR!' * 3)
 
-            # dict에 데이터 집어넣기
-            dict_temp = {
-                'name': restaurant_name,
-            }
+            # # dict에 데이터 집어넣기
+            # dict_temp = {
+            #     'name': restaurant_name,
+            #     'type': restaurant_type
+            # }
 
-            restaurant_dict['식당정보'].append(dict_temp)
+            # restaurant_dict['data'].append(dict_temp)
 
-            sleep(1)
+            # sleep(1)
 
     # 다음 페이지 버튼 누를 수 없으면 종료
     if not next_btn[-1].is_enabled():
